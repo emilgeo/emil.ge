@@ -1,0 +1,42 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import PageIntro from "@/components/PageIntro.astro";
+import SectionHeading from "@/components/SectionHeading.astro";
+import EntryRow from "@/components/EntryRow.astro";
+import { published } from "@/site";
+import { getProjects } from "@/lib/content";
+
+const projects = await getProjects();
+---
+
+<BaseLayout
+  title="Projects"
+  description="Things Emil George has built, and what came out of building them."
+  noindex={!published.projects}
+>
+  <section class="mx-auto max-w-3xl px-6 pt-16 pb-24 sm:pt-24">
+    <PageIntro
+      eyebrow="Projects"
+      title="Things I have built."
+      lead="What it is, why I built it, and what I learned. Not a list of technologies."
+    />
+
+    <div class="mt-12">
+      <SectionHeading eyebrow="All projects" count={projects.length} />
+      {projects.length === 0 && <p class="text-ink-soft font-mono text-xs">Nothing here yet.</p>}
+      <div>
+        {
+          projects.map((project) => (
+            <EntryRow
+              href={`/projects/${project.id}`}
+              stamp={project.data.year ?? ""}
+              title={project.data.title}
+              summary={project.data.summary}
+              meta={project.data.status}
+            />
+          ))
+        }
+      </div>
+    </div>
+  </section>
+</BaseLayout>

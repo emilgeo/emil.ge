@@ -1,49 +1,29 @@
 ---
-import "../styles/global.css";
+import BaseHead from "@/components/BaseHead.astro";
+import Header from "@/components/Header.astro";
+import Footer from "@/components/Footer.astro";
+import { site } from "@/site";
+import "@/styles/global.css";
 
 interface Props {
   title: string;
   description?: string;
+  noindex?: boolean;
 }
 
-const {
-  title,
-  description = "Emil George's personal website.",
-} = Astro.props;
-
-const navItems = [
-  { href: "/", label: "emil.ge" },
-  { href: "/now", label: "now" },
-  // { href: "/projects", label: "projects" },
-  // { href: "/uses", label: "uses" },
-];
+const { title, description = site.description, noindex = false } = Astro.props;
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang={site.locale}>
   <head>
-    <meta charset="UTF-8" />
-    <meta name="description" content={description} />
-    <meta name="viewport" content="width=device-width" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <title>{title}</title>
+    <BaseHead title={title} description={description} noindex={noindex} />
   </head>
-  <body>
-    <div class="site-shell">
-      <header class="site-header">
-        <nav class="site-nav" aria-label="Main navigation">
-          {
-            navItems.map((item) => (
-              <a href={item.href} aria-current={Astro.url.pathname === item.href ? "page" : undefined}>
-                {item.label}
-              </a>
-            ))
-          }
-        </nav>
-      </header>
-      <main>
-        <slot />
-      </main>
-    </div>
+  <body id="top" class="bg-paper text-ink">
+    <Header />
+    <main>
+      <slot />
+    </main>
+    <Footer />
   </body>
 </html>

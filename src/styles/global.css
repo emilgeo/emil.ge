@@ -1,157 +1,112 @@
+@import 'tailwindcss';
+@plugin '@tailwindcss/typography';
+
+/* Make the `dark:` variant respond to a `.dark` class instead of OS
+   preference, so the toggle in <ThemeToggle /> can override the system. */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* ---------------------------------------------------------------------
+   Design tokens (light values). Edit these five colors to re-skin the
+   entire site — every component reads from the tokens below, nothing
+   hardcodes a hex value.
+   --------------------------------------------------------------------- */
 :root {
   color-scheme: light;
-  --bg: #fbf7ef;
-  --text: #25211b;
-  --muted: #756d61;
-  --border: #ded3c2;
-  --card-bg: #fffdf8;
-  --accent: #8f4f2d;
+
+  --paper: #f7f6f3; /* page background */
+  --ink: #15161b; /* primary text */
+  --ink-soft: #5b5d66; /* secondary text */
+  --signal: #3d3dff; /* the one accent color */
+  --line: #e4e2dc; /* borders, rules */
+  --surface: #efeeea; /* cards, raised panels */
 }
 
-* {
-  box-sizing: border-box;
+.dark {
+  color-scheme: dark;
+
+  --paper: #101114;
+  --ink: #f2f1ed;
+  --ink-soft: #9a9ca6;
+  --signal: #7b7bff;
+  --line: #26272c;
+  --surface: #1a1b20;
 }
 
-html {
-  background: var(--bg);
+/* `inline` keeps these resolving against the live --paper/--ink/etc custom
+   properties above at runtime, instead of Tailwind inlining a static value
+   at build time — required for the .dark class swap to work. */
+@theme inline {
+  --color-paper: var(--paper);
+  --color-ink: var(--ink);
+  --color-ink-soft: var(--ink-soft);
+  --color-signal: var(--signal);
+  --color-line: var(--line);
+  --color-surface: var(--surface);
+
+  /* Astro's Fonts API exposes the loaded families on --ff-* (see
+     astro.config.mjs). These map them to font-display / font-body /
+     font-mono utility classes. */
+  --font-display: var(--ff-display);
+  --font-body: var(--ff-body);
+  --font-mono: var(--ff-mono);
 }
 
-body {
-  margin: 0;
-  min-height: 100vh;
-  background: var(--bg);
-  color: var(--text);
-  font-family:
-    ui-sans-serif,
-    system-ui,
-    -apple-system,
-    BlinkMacSystemFont,
-    "Segoe UI",
-    sans-serif;
-  font-size: 18px;
-  line-height: 1.7;
-}
+@layer base {
+  * {
+    border-color: var(--color-line);
+  }
 
-a {
-  color: var(--accent);
-  text-decoration-thickness: 0.08em;
-  text-underline-offset: 0.18em;
-}
-
-a:hover {
-  color: var(--text);
-}
-
-.site-shell {
-  width: min(100% - 40px, 680px);
-  margin: 0 auto;
-  padding: 42px 0 72px;
-}
-
-.site-header {
-  margin-bottom: 72px;
-}
-
-.site-nav {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px 18px;
-  align-items: center;
-  font-size: 0.92rem;
-}
-
-.site-nav a {
-  color: var(--muted);
-  text-decoration: none;
-}
-
-.site-nav a:first-child {
-  color: var(--text);
-  font-weight: 700;
-}
-
-.site-nav a[aria-current="page"],
-.site-nav a:hover {
-  color: var(--accent);
-}
-
-h1,
-h2,
-h3 {
-  line-height: 1.2;
-  letter-spacing: 0;
-}
-
-h1 {
-  margin: 0 0 24px;
-  font-size: clamp(2.2rem, 9vw, 4.4rem);
-  font-weight: 750;
-}
-
-h2 {
-  margin: 42px 0 12px;
-  font-size: 1.35rem;
-}
-
-h3 {
-  margin: 0 0 6px;
-  font-size: 1rem;
-}
-
-p {
-  margin: 0 0 20px;
-}
-
-ul {
-  margin: 0 0 24px;
-  padding-left: 1.25rem;
-}
-
-li + li {
-  margin-top: 6px;
-}
-
-.lead {
-  max-width: 34rem;
-  font-size: 1.15rem;
-}
-
-.muted {
-  color: var(--muted);
-}
-
-.card-grid {
-  display: grid;
-  gap: 18px;
-}
-
-.card {
-  padding: 18px 0 0;
-  border-top: 1px solid var(--border);
-}
-
-.card p {
-  margin-bottom: 0;
-}
-
-.status {
-  display: inline-block;
-  margin-top: 8px;
-  color: var(--muted);
-  font-size: 0.92rem;
-}
-
-@media (max-width: 520px) {
   body {
-    font-size: 16px;
+    background-color: var(--color-paper);
+    color: var(--color-ink);
+    font-family: var(--font-body);
+    -webkit-font-smoothing: antialiased;
   }
 
-  .site-shell {
-    width: min(100% - 28px, 680px);
-    padding-top: 28px;
+  ::selection {
+    background-color: var(--color-signal);
+    color: var(--color-paper);
   }
 
-  .site-header {
-    margin-bottom: 52px;
+  :focus-visible {
+    outline: 2px solid var(--color-signal);
+    outline-offset: 3px;
   }
+
+  @media (prefers-reduced-motion: no-preference) {
+    body {
+      transition:
+        background-color 200ms ease,
+        color 200ms ease;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    ::view-transition-group(*),
+    ::view-transition-old(*),
+    ::view-transition-new(*) {
+      animation: none !important;
+    }
+  }
+}
+
+/* Tune @tailwindcss/typography to use the site's tokens instead of its
+   default gray scale, so rendered Markdown matches the rest of the page. */
+.prose {
+  --tw-prose-body: var(--color-ink-soft);
+  --tw-prose-headings: var(--color-ink);
+  --tw-prose-bold: var(--color-ink);
+  --tw-prose-links: var(--color-signal);
+  --tw-prose-bullets: var(--color-signal);
+  --tw-prose-hr: var(--color-line);
+  --tw-prose-quotes: var(--color-ink);
+  --tw-prose-quote-borders: var(--color-signal);
+  --tw-prose-code: var(--color-ink);
+}
+.prose :where(h2, h3, h4) {
+  font-family: var(--font-display);
+}
+.prose :where(a) {
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
 }

@@ -1,15 +1,137 @@
 ---
-import BaseLayout from "../layouts/BaseLayout.astro";
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import Button from "@/components/Button.astro";
+import SectionHeading from "@/components/SectionHeading.astro";
+import EntryRow from "@/components/EntryRow.astro";
+import { site, published } from "@/site";
+import { getWriting, getProjects } from "@/lib/content";
+import { formatDate } from "@/utils/formatDate";
+
+const now = [
+  { label: "Building", value: "Web applications, and small tools I want to understand" },
+  { label: "Home", value: "A newly bought house, slowly making it ours" },
+  { label: "Exploring", value: "Personal finance tooling" },
+  { label: "Based in", value: "Dublin" },
+];
+
+const projects = published.projects ? await getProjects() : [];
+const featuredProjects = projects.filter((project) => project.data.featured).slice(0, 5);
+const writing = published.writing ? (await getWriting()).slice(0, 5) : [];
 ---
 
-<BaseLayout title="Emil George">
-  <h1>Emil George</h1>
-  <p class="lead">Software engineer living in Ireland.</p>
-  <p>
-    This is my personal corner of the internet — a place for what I am doing now,
-    projects I am working on, and notes I want to keep.
-  </p>
-  <p>
-    <a href="/now">See what I’m doing now</a>
-  </p>
+<BaseLayout title={site.name}>
+  <section class="mx-auto max-w-3xl px-6 pt-16 pb-20 sm:pt-24">
+    <p class="text-ink-soft mb-6 inline-flex items-center gap-2 font-mono text-xs">
+      <span class="bg-signal h-1.5 w-1.5 rounded-full" aria-hidden="true"></span>
+      {site.status}
+    </p>
+
+    <h1 class="font-display text-ink max-w-2xl text-4xl leading-[1.1] font-medium sm:text-5xl">
+      {site.tagline}
+    </h1>
+
+    <p class="text-ink-soft mt-6 max-w-md">
+      I build software and write about technology, money and things I am figuring out.
+    </p>
+
+    <div class="mt-8 flex flex-wrap items-center gap-3">
+      {published.projects && <Button href="/projects" variant="solid">See the work &rarr;</Button>}
+      <Button href="/about" variant={published.projects ? "ghost" : "solid"}>About me</Button>
+      <Button href="#contact" variant="ghost">Say hello</Button>
+    </div>
+  </section>
+
+  {
+    published.now && (
+      <section id="now" class="mx-auto max-w-3xl px-6 pb-20">
+        <SectionHeading eyebrow="Now" />
+        <dl class="grid gap-4">
+          {now.map((item) => (
+            <div class="border-line grid gap-1 border-b pb-4 sm:grid-cols-[8rem_1fr] sm:gap-6">
+              <dt class="text-ink-soft font-mono text-xs tracking-wide uppercase">{item.label}</dt>
+              <dd class="text-ink-soft">{item.value}</dd>
+            </div>
+          ))}
+        </dl>
+        <a href="/now" class="text-signal mt-6 inline-block font-mono text-xs hover:underline">
+          What I am doing now &rarr;
+        </a>
+      </section>
+    )
+  }
+
+  {
+    featuredProjects.length > 0 && (
+      <section id="work" class="mx-auto max-w-3xl px-6 pb-20">
+        <SectionHeading eyebrow="Selected projects" count={projects.length} />
+        <div>
+          {featuredProjects.map((project) => (
+            <EntryRow
+              href={`/projects/${project.id}`}
+              stamp={project.data.year ?? ""}
+              title={project.data.title}
+              summary={project.data.summary}
+              meta={project.data.status}
+            />
+          ))}
+        </div>
+        {projects.length > featuredProjects.length && (
+          <a
+            href="/projects"
+            class="text-ink-soft hover:text-signal mt-6 inline-block font-mono text-xs transition-colors"
+          >
+            View all {projects.length} projects &rarr;
+          </a>
+        )}
+      </section>
+    )
+  }
+
+  {
+    writing.length > 0 && (
+      <section id="writing" class="mx-auto max-w-3xl px-6 pb-20">
+        <SectionHeading eyebrow="Writing" />
+        <div>
+          {writing.map((post) => (
+            <EntryRow
+              href={`/writing/${post.id}`}
+              stamp={formatDate(post.data.date, "compact")}
+              title={post.data.title}
+              summary={post.data.description}
+              meta={post.data.tags.slice(0, 2).join(" · ")}
+            />
+          ))}
+        </div>
+        <a href="/writing" class="text-signal mt-6 inline-block font-mono text-xs hover:underline">
+          All writing &rarr;
+        </a>
+      </section>
+    )
+  }
+
+  <section id="about" class="mx-auto max-w-3xl px-6 pb-20">
+    <SectionHeading eyebrow="About" />
+    <p class="text-ink-soft max-w-xl">
+      Software engineer originally from India, now based in Dublin. Most of my career has been web
+      applications: PHP and WordPress at the start, Node.js, React and modern backend systems since.
+    </p>
+    <a href="/about" class="text-signal mt-4 inline-block font-mono text-xs hover:underline">
+      More about how I work &rarr;
+    </a>
+  </section>
+
+  <section id="contact" class="mx-auto max-w-3xl px-6 pb-24">
+    <SectionHeading eyebrow="Elsewhere" />
+    <p class="font-display text-ink max-w-lg text-2xl sm:text-3xl">Say hello.</p>
+    <div class="mt-4 flex flex-wrap items-center gap-6 font-mono text-sm">
+      <a href={`mailto:${site.email}`} class="text-signal hover:underline">{site.email}</a>
+      {
+        site.social.map((link) => (
+          <a href={link.href} rel="me" class="text-ink-soft hover:text-signal transition-colors">
+            {link.label}
+          </a>
+        ))
+      }
+    </div>
+  </section>
 </BaseLayout>

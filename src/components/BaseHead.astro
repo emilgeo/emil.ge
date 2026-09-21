@@ -1,0 +1,72 @@
+---
+import { ClientRouter } from "astro:transitions";
+import { Font } from "astro:assets";
+import { site, published } from "@/site";
+
+interface Props {
+  title: string;
+  description?: string;
+  /** Keeps unlisted sections out of search engines while they are still scaffolding. */
+  noindex?: boolean;
+}
+
+const { title: pageTitle, description: pageDescription, noindex = false } = Astro.props;
+
+const fullTitle = pageTitle.includes(site.name) ? pageTitle : `${pageTitle} · ${site.name}`;
+const description = pageDescription || site.description;
+const canonicalURL = new URL(Astro.url.pathname, Astro.site);
+---
+
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="generator" content={Astro.generator} />
+<meta name="author" content={site.name} />
+
+<link rel="canonical" href={canonicalURL} />
+
+<title>{fullTitle}</title>
+<meta name="title" content={fullTitle} />
+<meta name="description" content={description} />
+<link rel="sitemap" href="/sitemap-index.xml" />
+
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content={site.name} />
+<meta property="og:title" content={fullTitle} />
+<meta property="og:url" content={canonicalURL} />
+<meta property="og:description" content={description} />
+
+<meta name="twitter:card" content="summary" />
+<meta name="twitter:title" content={fullTitle} />
+<meta name="twitter:description" content={description} />
+
+<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+{
+  published.writing && (
+    <link rel="alternate" type="application/rss+xml" title={`${site.name}: writing`} href="/rss.xml" />
+  )
+}
+
+<meta name="robots" content={noindex ? "noindex, nofollow" : "index, follow"} />
+
+<Font cssVariable="--ff-display" preload />
+<Font cssVariable="--ff-body" preload />
+<Font cssVariable="--ff-mono" />
+
+<script is:inline>
+  // Runs before first paint to avoid a flash of the wrong theme, and again
+  // after each view transition. Kept in sync by ThemeToggle.astro.
+  (function () {
+    const stored = localStorage.getItem("theme");
+    const theme =
+      stored ?? (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+    document.documentElement.classList.toggle("dark", theme === "dark");
+  })();
+  document.addEventListener("astro:after-swap", () => {
+    const stored = localStorage.getItem("theme");
+    const theme =
+      stored ?? (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+    document.documentElement.classList.toggle("dark", theme === "dark");
+  });
+</script>
+
+<ClientRouter />

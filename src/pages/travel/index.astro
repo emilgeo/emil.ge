@@ -1,0 +1,48 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import PageIntro from "@/components/PageIntro.astro";
+import SectionHeading from "@/components/SectionHeading.astro";
+import { published } from "@/site";
+import { getTravel } from "@/lib/content";
+
+const places = await getTravel();
+---
+
+<BaseLayout
+  title="Travel"
+  description="Places Emil George has travelled, with notes and photos."
+  noindex={!published.travel}
+>
+  <section class="mx-auto max-w-3xl px-6 pt-16 pb-24 sm:pt-24">
+    <PageIntro
+      eyebrow="Travel"
+      title="Places worth remembering."
+      lead="Written up after getting home, not while away."
+    />
+
+    <div class="mt-12">
+      <SectionHeading eyebrow="Countries" count={places.length} />
+      {places.length === 0 && <p class="text-ink-soft font-mono text-xs">Nothing here yet.</p>}
+      <ul class="grid gap-3 sm:grid-cols-2">
+        {
+          places.map((place) => (
+            <li>
+              <a
+                href={`/travel/${place.id}`}
+                class="group border-line hover:border-signal flex items-center gap-3 rounded-lg border px-4 py-3 transition-colors"
+              >
+                <span class="text-xl" aria-hidden="true">
+                  {place.data.flag}
+                </span>
+                <span class="font-display text-ink group-hover:text-signal transition-colors">
+                  {place.data.country}
+                </span>
+                <span class="text-ink-soft ml-auto font-mono text-xs">{place.data.year}</span>
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+</BaseLayout>

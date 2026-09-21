@@ -1,0 +1,49 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import PageIntro from "@/components/PageIntro.astro";
+import SectionHeading from "@/components/SectionHeading.astro";
+import EntryRow from "@/components/EntryRow.astro";
+import { published } from "@/site";
+import { getWriting, groupByYear } from "@/lib/content";
+import { formatDate } from "@/utils/formatDate";
+
+const posts = await getWriting();
+const years = groupByYear(posts);
+---
+
+<BaseLayout
+  title="Writing"
+  description="Notes on engineering, money and building things."
+  noindex={!published.writing}
+>
+  <section class="mx-auto max-w-3xl px-6 pt-16 pb-24 sm:pt-24">
+    <PageIntro
+      eyebrow="Writing"
+      title="Notes, when there is something worth saying."
+      lead="Not a schedule, and not a content strategy."
+    />
+
+    {posts.length === 0 && <p class="text-ink-soft mt-10 font-mono text-xs">Nothing published yet.</p>}
+
+    <div class="mt-12 grid gap-12">
+      {
+        years.map(([year, entries]) => (
+          <div>
+            <SectionHeading eyebrow={year} count={entries.length} />
+            <div>
+              {entries.map((post) => (
+                <EntryRow
+                  href={`/writing/${post.id}`}
+                  stamp={formatDate(post.data.date, "compact")}
+                  title={post.data.title}
+                  summary={post.data.description}
+                  meta={post.data.tags.slice(0, 2).join(" · ")}
+                />
+              ))}
+            </div>
+          </div>
+        ))
+      }
+    </div>
+  </section>
+</BaseLayout>

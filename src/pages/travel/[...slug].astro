@@ -1,0 +1,27 @@
+---
+import type { GetStaticPaths } from "astro";
+import { render } from "astro:content";
+import ProseLayout from "@/layouts/ProseLayout.astro";
+import { published } from "@/site";
+import { getTravel } from "@/lib/content";
+
+export const getStaticPaths = (async () => {
+  const places = await getTravel();
+  return places.map((place) => ({ params: { slug: place.id }, props: { place } }));
+}) satisfies GetStaticPaths;
+
+const { place } = Astro.props;
+const { Content } = await render(place);
+---
+
+<ProseLayout
+  title={`${place.data.flag} ${place.data.country}`}
+  description={place.data.summary}
+  eyebrow="Travel"
+  meta={place.data.year}
+  noindex={!published.travel || place.data.draft}
+  backHref="/travel"
+  backLabel="All travel"
+>
+  <Content />
+</ProseLayout>

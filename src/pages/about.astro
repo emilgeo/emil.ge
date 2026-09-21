@@ -1,0 +1,49 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import Button from "@/components/Button.astro";
+import PageIntro from "@/components/PageIntro.astro";
+import { site } from "@/site";
+
+const tools = ["TypeScript", "Node.js", "React", "PHP", "PostgreSQL", "Astro"];
+---
+
+<BaseLayout title="About" description={`A bit about ${site.name} and how he works.`}>
+  <section class="mx-auto max-w-3xl px-6 pt-16 pb-24 sm:pt-24">
+    <PageIntro eyebrow="About" title="Software engineer, based in Dublin." />
+
+    <div class="prose prose-sm sm:prose-base mt-8 max-w-xl">
+      <p>I'm Emil George, a software engineer originally from India and now based in Dublin.</p>
+      <p>
+        I've spent most of my career building web applications, starting with PHP and WordPress and
+        gradually moving into Node.js, React and modern backend systems.
+      </p>
+      <p>
+        I've worked on products involving payments, donations, messaging, authentication and
+        large-scale data migrations.
+      </p>
+      <p>
+        These days I'm particularly interested in software architecture, developer tooling, personal
+        finance and building small products.
+      </p>
+      <p>
+        Outside of work, I enjoy travelling, experimenting with technology and trying to understand
+        how things work.
+      </p>
+    </div>
+
+    <div class="mt-12">
+      <p class="text-ink-soft mb-3 font-mono text-xs tracking-[0.2em] uppercase">Tools</p>
+      <ul class="flex flex-wrap gap-2">
+        {
+          tools.map((tool) => (
+            <li class="border-line text-ink-soft rounded-full border px-3 py-1 font-mono text-xs">
+              {tool}
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+
+    <Button href={`mailto:${site.email}`} class="mt-12">Get in touch</Button>
+  </section>
+</BaseLayout>

@@ -1,0 +1,40 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import PageIntro from "@/components/PageIntro.astro";
+
+const groups = [
+  { title: "Hardware", items: ["MacBook", "Raspberry Pi", "Home office desk setup"] },
+  { title: "Software", items: ["VS Code", "GitHub", "Actual Budget", "DaVinci Resolve"] },
+  { title: "Development", items: ["Node.js", "React", "PHP", "PostgreSQL", "Docker"] },
+  { title: "Home", items: ["Pi-hole", "Home networking", "Self-hosted odds and ends"] },
+];
+---
+
+<BaseLayout title="Uses" description="Hardware, software and tools Emil George uses.">
+  <section class="mx-auto max-w-3xl px-6 pt-16 pb-24 sm:pt-24">
+    <PageIntro
+      eyebrow="Uses"
+      title="The tools I actually reach for."
+      lead="Updated whenever something changes, which is less often than you would think."
+    />
+
+    <div class="mt-10 grid gap-10">
+      {
+        groups.map((group) => (
+          <div>
+            <p class="text-ink-soft mb-3 font-mono text-xs tracking-[0.2em] uppercase">
+              {group.title}
+            </p>
+            <ul class="flex flex-wrap gap-2">
+              {group.items.map((item) => (
+                <li class="border-line text-ink-soft rounded-full border px-3 py-1 font-mono text-xs">
+                  {item}
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))
+      }
+    </div>
+  </section>
+</BaseLayout>

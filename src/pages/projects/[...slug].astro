@@ -1,0 +1,39 @@
+---
+import type { GetStaticPaths } from "astro";
+import { render } from "astro:content";
+import ProseLayout from "@/layouts/ProseLayout.astro";
+import { published } from "@/site";
+import { getProjects } from "@/lib/content";
+
+export const getStaticPaths = (async () => {
+  const projects = await getProjects();
+  return projects.map((project) => ({ params: { slug: project.id }, props: { project } }));
+}) satisfies GetStaticPaths;
+
+const { project } = Astro.props;
+const { Content } = await render(project);
+const stack = project.data.stack.length > 0 ? ` · ${project.data.stack.join(", ")}` : "";
+---
+
+<ProseLayout
+  title={project.data.title}
+  description={project.data.summary}
+  eyebrow="Project"
+  meta={`${project.data.status}${project.data.year ? ` · ${project.data.year}` : ""}${stack}`}
+  noindex={!published.projects || project.data.draft}
+  backHref="/projects"
+  backLabel="All projects"
+>
+  <Content />
+  {
+    project.data.links.length > 0 && (
+      <p>
+        {project.data.links.map((link) => (
+          <a href={link.href} class="mr-4">
+            {link.label}
+          </a>
+        ))}
+      </p>
+    )
+  }
+</ProseLayout>
