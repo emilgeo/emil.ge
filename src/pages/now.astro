@@ -4,16 +4,12 @@ import PageIntro from "@/components/PageIntro.astro";
 
 const lastUpdated = "September 2026";
 
-const sections = [
+const sectionsArchived= [
   {
     label: "Building",
     body: "Web application and backend work by day, plus small tools I build to understand how something works.",
   },
   { label: "Learning", body: "Going deeper into Node.js, React, SQL and system design." },
-  {
-    label: "Home",
-    body: "After what felt like a thousand viewings, we bought a house and moved in. The back garden is done to a basic stage: old soil and weeds cleared, new grass down, a spot set aside for a shed, and planter boxes on either side edged in dark grey cobblestone. The rest of the place is slowly becoming ours.",
-  },
   {
     label: "Exploring",
     body: "Tidying up my personal finance setup and experimenting with small tools around it.",
@@ -22,6 +18,18 @@ const sections = [
     label: "Looking forward to",
     body: "More time outside, clearer routines, and steady progress on the things that matter.",
   },
+];
+
+const sections = [
+  { label: "Parenting", body: "Blessed to be a dad, stepped into parent life, getting used to her giggles, moos, wet and dirty nappies. Sleep is better nowadays, compared to her newborn phase" },
+  {
+    label: "Home",
+    body: "After what felt like a thousand viewings, we bought a house and moved in. The back garden is done to a basic stage: old soil and weeds cleared, new grass down, a spot set aside for a shed, and planter boxes on either side edged in dark grey cobblestone. The rest of the place is slowly becoming ours.",
+  },
+  {
+    label: "Exploring",
+    body: "Tidying up my personal finance setup and experimenting with <a href='https://actualbudget.org/'actual budget.</a> <a href='https://github.com/emilgeo/actual/branches'Contributing</a> in order to make it a little more better, in addition to building small tools around it.",
+  }
 ];
 ---
 
