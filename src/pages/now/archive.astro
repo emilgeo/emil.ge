@@ -1,0 +1,45 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import PageIntro from "@/components/PageIntro.astro";
+import SectionHeading from "@/components/SectionHeading.astro";
+import EntryRow from "@/components/EntryRow.astro";
+import { getNowEntries, formatMonth } from "@/lib/content";
+import { formatDate } from "@/utils/formatDate";
+
+const [, ...past] = await getNowEntries();
+---
+
+<BaseLayout
+  title="Now archive"
+  description="Earlier now pages: what Emil George was focused on at the time."
+>
+  <section class="mx-auto max-w-3xl px-6 pt-16 pb-24 sm:pt-24">
+    <PageIntro
+      eyebrow="Now · archive"
+      title="What I used to be focused on."
+      lead="Every now page is kept rather than overwritten, so the older ones stay readable."
+    />
+
+    <div class="mt-12">
+      <SectionHeading eyebrow="Earlier updates" count={past.length} />
+      {past.length === 0 && <p class="text-ink-soft font-mono text-xs">Nothing archived yet.</p>}
+      <div>
+        {
+          past.map((entry) => (
+            <EntryRow
+              href={`/now/${entry.id}`}
+              stamp={formatDate(entry.data.date, "compact")}
+              title={formatMonth(entry.data.date)}
+              summary={entry.data.summary}
+              meta={`${entry.data.sections.length} sections`}
+            />
+          ))
+        }
+      </div>
+    </div>
+
+    <a href="/now" class="text-signal mt-12 inline-block font-mono text-xs hover:underline">
+      &larr; Current now page
+    </a>
+  </section>
+</BaseLayout>

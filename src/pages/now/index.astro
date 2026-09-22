@@ -1,0 +1,33 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import PageIntro from "@/components/PageIntro.astro";
+import NowSections from "@/components/NowSections.astro";
+import { getNowEntries, formatMonth } from "@/lib/content";
+
+const entries = await getNowEntries();
+const [current, ...past] = entries;
+---
+
+<BaseLayout title="Now" description="What Emil George is focused on at the moment.">
+  <section class="mx-auto max-w-3xl px-6 pt-16 pb-24 sm:pt-24">
+    <PageIntro
+      eyebrow={`Now · updated ${formatMonth(current.data.date)}`}
+      title="What I'm focused on right now."
+    />
+
+    <NowSections sections={current.data.sections} />
+
+    <p class="text-ink-soft mt-10 max-w-xl text-sm">
+      This is a <a href="https://nownownow.com/about" class="text-signal hover:underline">now page</a
+      >: what has my attention at the moment, rather than everything I have ever done.
+    </p>
+
+    {
+      past.length > 0 && (
+        <a href="/now/archive" class="text-signal mt-6 inline-block font-mono text-xs hover:underline">
+          Earlier updates ({past.length}) &rarr;
+        </a>
+      )
+    }
+  </section>
+</BaseLayout>

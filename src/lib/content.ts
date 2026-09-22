@@ -20,6 +20,16 @@ export async function getTravel(): Promise<CollectionEntry<"travel">[]> {
   return entries.sort((a, b) => a.data.country.localeCompare(b.data.country));
 }
 
+/** Newest first. The first entry is the live /now page; the rest are the archive. */
+export async function getNowEntries(): Promise<CollectionEntry<"now">[]> {
+  const entries = await getCollection("now", visible);
+  return entries.sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+}
+
+export function formatMonth(date: Date): string {
+  return date.toLocaleDateString("en-IE", { year: "numeric", month: "long" });
+}
+
 export function formatDate(date: Date): string {
   return date.toLocaleDateString("en-IE", { year: "numeric", month: "long", day: "numeric" });
 }

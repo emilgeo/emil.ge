@@ -4,13 +4,14 @@ import Button from "@/components/Button.astro";
 import SectionHeading from "@/components/SectionHeading.astro";
 import EntryRow from "@/components/EntryRow.astro";
 import { site, published } from "@/site";
-import { getWriting, getProjects } from "@/lib/content";
+import { getWriting, getProjects, getNowEntries } from "@/lib/content";
 import { formatDate } from "@/utils/formatDate";
 
+const [currentNow] = await getNowEntries();
 const now = [
-  { label: "Building", value: "Web applications, and small tools I want to understand" },
-  { label: "Home", value: "A newly bought house, slowly making it ours" },
-  { label: "Exploring", value: "Personal finance tooling" },
+  ...currentNow.data.sections
+    .filter((section) => section.short)
+    .map((section) => ({ label: section.label, value: section.short })),
   { label: "Based in", value: "Dublin" },
 ];
 

@@ -2,6 +2,26 @@ import { defineCollection } from "astro:content";
 import { glob } from "astro/loaders";
 import { z } from "astro/zod";
 
+const now = defineCollection({
+  loader: glob({ base: "./src/content/now", pattern: "**/*.md" }),
+  schema: z.object({
+    date: z.coerce.date(),
+    summary: z.string().optional(),
+    // `body` is rendered as HTML so entries can carry links.
+    sections: z
+      .array(
+        z.object({
+          label: z.string(),
+          body: z.string(),
+          // One-line version for the homepage. Sections without it are only shown on /now.
+          short: z.string().optional(),
+        }),
+      )
+      .min(1),
+    draft: z.boolean().default(false),
+  }),
+});
+
 const writing = defineCollection({
   loader: glob({ base: "./src/content/writing", pattern: "**/*.md" }),
   schema: z.object({
@@ -39,4 +59,4 @@ const travel = defineCollection({
   }),
 });
 
-export const collections = { writing, projects, travel };
+export const collections = { now, writing, projects, travel };

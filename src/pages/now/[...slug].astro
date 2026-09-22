@@ -1,0 +1,36 @@
+---
+import type { GetStaticPaths } from "astro";
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import PageIntro from "@/components/PageIntro.astro";
+import NowSections from "@/components/NowSections.astro";
+import { getNowEntries, formatMonth } from "@/lib/content";
+
+// The newest entry lives at /now, so only past ones get their own URL.
+export const getStaticPaths = (async () => {
+  const [, ...past] = await getNowEntries();
+  return past.map((entry) => ({ params: { slug: entry.id }, props: { entry } }));
+}) satisfies GetStaticPaths;
+
+const { entry } = Astro.props;
+const month = formatMonth(entry.data.date);
+---
+
+<BaseLayout
+  title={`Now · ${month}`}
+  description={entry.data.summary ?? `What Emil George was focused on in ${month}.`}
+>
+  <section class="mx-auto max-w-3xl px-6 pt-16 pb-24 sm:pt-24">
+    <PageIntro eyebrow={`Now · ${month}`} title={`What I was focused on in ${month}.`} />
+
+    <p class="text-ink-soft mt-6 max-w-xl text-sm">
+      This is an archived now page. See the
+      <a href="/now" class="text-signal hover:underline">current one</a> for what I am doing today.
+    </p>
+
+    <NowSections sections={entry.data.sections} />
+
+    <a href="/now/archive" class="text-signal mt-10 inline-block font-mono text-xs hover:underline">
+      &larr; All earlier updates
+    </a>
+  </section>
+</BaseLayout>

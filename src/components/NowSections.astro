@@ -1,0 +1,40 @@
+---
+interface Props {
+  sections: { label: string; body: string }[];
+}
+
+const { sections } = Astro.props;
+
+const slugify = (label: string) =>
+  label
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-|-$/g, "");
+---
+
+<dl class="mt-10 grid gap-4">
+  {
+    sections.map((item) => {
+      const id = slugify(item.label);
+      return (
+        <div
+          id={id}
+          class="border-line group grid scroll-mt-24 gap-1 border-b pb-4 sm:grid-cols-[10rem_1fr] sm:gap-6"
+        >
+          <dt class="text-ink-soft font-mono text-xs tracking-wide uppercase">
+            <a href={`#${id}`} class="hover:text-signal transition-colors">
+              {item.label}
+              <span
+                aria-hidden="true"
+                class="text-signal opacity-0 transition-opacity group-hover:opacity-100"
+              >
+                {" #"}
+              </span>
+            </a>
+          </dt>
+          <dd class="text-ink-soft [&_a]:text-signal [&_a:hover]:underline" set:html={item.body} />
+        </div>
+      );
+    })
+  }
+</dl>
