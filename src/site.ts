@@ -21,7 +21,7 @@ export const site = {
 export const published = {
   now: true,
   about: true,
-  uses: true,
+  uses: false,
   writing: true,
   projects: false,
   travel: false,
