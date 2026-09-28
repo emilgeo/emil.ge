@@ -22,7 +22,7 @@ export const published = {
   now: true,
   about: true,
   uses: true,
-  writing: false,
+  writing: true,
   projects: false,
   travel: false,
 } as const;
