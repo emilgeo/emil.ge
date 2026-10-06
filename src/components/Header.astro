@@ -1,6 +1,6 @@
 ---
 import ThemeToggle from "@/components/ThemeToggle.astro";
-import { site, visibleNavLinks } from "@/site";
+import { externalNavLinks, site, visibleNavLinks } from "@/site";
 
 const currentPath = Astro.url.pathname;
 ---
@@ -37,6 +37,16 @@ const currentPath = Astro.url.pathname;
             </a>
           );
         })
+      }
+      {
+        externalNavLinks.map((link) => (
+          <a
+            href={link.href}
+            class="text-ink-soft hover:text-ink font-mono text-xs tracking-wide uppercase transition-colors"
+          >
+            {link.label}
+          </a>
+        ))
       }
       <ThemeToggle />
     </nav>

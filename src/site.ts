@@ -38,6 +38,10 @@ export const navLinks = [
 
 export const visibleNavLinks = navLinks.filter((link) => published[link.section]);
 
+export const externalNavLinks = [
+  { label: "india2actual", href: "https://india2actual.emil.ge" },
+] as const;
+
 /** Sections that build but stay out of nav, sitemap, RSS and search results. */
 export const unlistedSections = (["writing", "projects", "travel"] as const).filter(
   (section) => !published[section],
