@@ -42,9 +42,14 @@ const currentPath = Astro.url.pathname;
         externalNavLinks.map((link) => (
           <a
             href={link.href}
-            class="text-ink-soft hover:text-ink font-mono text-xs tracking-wide uppercase transition-colors"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label={link.label}
+            class="font-mono text-xs font-semibold tracking-wide transition-opacity hover:opacity-80"
           >
-            {link.label}
+            <span aria-hidden="true"
+              ><span class="text-ink">india</span><span class="text-[#e8892b] dark:text-[#f2a65a]">2</span><span class="text-[#8719e0] dark:text-[#b37cf2]">actual</span></span
+            >
           </a>
         ))
       }
